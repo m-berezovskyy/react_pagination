@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import './App.css';
 import { getNumbers } from './utils';
 import { Pagination } from './components/Pagination/Pagination';
@@ -7,20 +8,29 @@ import { Pagination } from './components/Pagination/Pagination';
 const items = getNumbers(1, 42).map(n => `Item ${n}`);
 
 export const App: React.FC = () => {
-  // 1. Стани
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(5);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  // 2. Математика нарізки
+  const currentPage = Number(searchParams.get('page')) || 1;
+  const perPage = Number(searchParams.get('perPage')) || 5;
+
   const total = items.length;
   const startIndex = (currentPage - 1) * perPage;
   const endIndex = Math.min(startIndex + perPage, total);
-
   const visibleItems = items.slice(startIndex, endIndex);
 
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set('page', newPage.toString());
+    setSearchParams(params);
+  };
+
   const handlePerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPerPage(Number(e.target.value));
-    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams);
+
+    params.set('perPage', e.target.value);
+    params.set('page', '1');
+    setSearchParams(params);
   };
 
   return (
@@ -57,7 +67,7 @@ export const App: React.FC = () => {
         total={total}
         perPage={perPage}
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
       />
 
       <ul>
