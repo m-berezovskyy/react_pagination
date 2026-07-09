@@ -28,6 +28,22 @@ export const Pagination: React.FC<Props> = ({
     }
   };
 
+  const handlePrev = (e: React.MouseEvent) => {
+    if (currentPage > 1) {
+      handlePageClick(currentPage - 1, e);
+    } else {
+      e.preventDefault();
+    }
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    if (currentPage < totalPages) {
+      handlePageClick(currentPage + 1, e);
+    } else {
+      e.preventDefault();
+    }
+  };
+
   if (totalPages <= 1) {
     return null;
   }
@@ -40,13 +56,7 @@ export const Pagination: React.FC<Props> = ({
           className="page-link"
           href="#/"
           aria-disabled={currentPage === 1}
-          onClick={e => {
-            if (currentPage > 1) {
-              handlePageClick(currentPage - 1, e);
-            } else {
-              e.preventDefault();
-            }
-          }}
+          onClick={handlePrev}
         >
           «
         </a>
@@ -76,13 +86,7 @@ export const Pagination: React.FC<Props> = ({
           className="page-link"
           href="#/"
           aria-disabled={currentPage === totalPages}
-          onClick={e => {
-            if (currentPage < totalPages) {
-              handlePageClick(currentPage + 1, e);
-            } else {
-              e.preventDefault();
-            }
-          }}
+          onClick={handleNext}
         >
           »
         </a>
